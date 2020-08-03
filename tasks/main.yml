@@ -1,0 +1,14 @@
+---
+- name: Configure cron check for check_git
+  cron:
+    hour: "*/4"
+    minute: "{{ site_number|int % 60 }}"
+    name: "check_git for {{bare_url}}"
+    job: "/usr/lib/nagios/plugins/check_git -s -d {{ gitroot }} -n {{ bare_url }} -l /var/log/git/{{ bare_url }}.log"
+  when: env != 'Dev'
+
+- name: Create /var/log/git
+  file:
+    path: /var/log/git
+    state: directory
+    mode: '0755'
