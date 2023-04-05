@@ -14,6 +14,7 @@
     path: /var/log/git
     state: directory
     mode: '0755'
+  become: yes
 
 - name: Create an empty log file with correct ownership
   file:
@@ -22,3 +23,4 @@
     mode: 0644
     owner: "{{ run_as_user }}"
     group: "{{ run_as_user }}"
+  become: yes
