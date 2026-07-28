@@ -1,20 +1,21 @@
 ---
+- name: Ignore dev sites
+  meta: end_host
+  when: env == 'Dev'
+
 - name: Configure cron check for check_git
   cron:
     hour: "*/4"
     minute: "{{ site_number|int % 60 }}"
     name: "check_git for {{bare_url}}"
     job: "/usr/lib/nagios/plugins/check_git -s -d {{ gitroot }} -n {{ bare_url }} -l /var/log/git/{{ bare_url }}.log"
-  become: yes
   become_user: "{{ run_as_user }}"
-  when: env != 'Dev'
 
 - name: Create /var/log/git
   file:
     path: /var/log/git
     state: directory
     mode: '0755'
-  become: yes
 
 - name: Create an empty log file with correct ownership
   file:
