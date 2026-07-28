@@ -23,4 +23,11 @@
     mode: 0644
     owner: "{{ run_as_user }}"
     group: "{{ run_as_user }}"
-  become: yes
+
+- name: wp-cron
+  cron:
+    minute: "{{ site_number|int % 60 }},{{ (site_number|int % 60) + 15 }},{{ (site_number|int % 60) + 30 }},{{ (site_number|int % 60) + 45 }}"
+    name: "WP Cron {{bare_url}}"
+    job: "{{ wp_cli_path | default('/usr/local/bin/wp') }} cron event run --due-now  --path={{ webroot }} --quiet"
+  become_user: "{{ run_as_user }}"
+  when: cms == 'WordPress'
